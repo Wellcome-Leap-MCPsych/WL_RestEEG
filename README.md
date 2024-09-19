@@ -15,6 +15,9 @@ The scripts are organised as follows:
     1. Currently this only includes the spectral power estimates. 
 
 ## Notes:
+1. These files are what I sent out to the individual sites. I do not know if they hade made adjustments after receiving them. While I expect that the processings steps are the same, file naming and other directory specific things might have changed. And so I imagine it's a good idea to check in with them accordingly.
+
+### Other Notes
 1. The test data are in various forms based on what was shared to me. There are some weird things about it from memory.
    1. Stanford was unable to share a trimmed raw file, so shared an existing .SET file (i.e., output from EEGLAB). This meant I had to work with them to get their import functions correct without directly being able to test it.
    2. McLean has two different test sets; not because they are different internally but due to file naming conventions. The example data has been renamed using a different naming convention and so might the naming of output files might be a bit strange.
