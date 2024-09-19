@@ -1,7 +1,7 @@
 %%% WellcomeLEAP - Resting State EEG data pre-processing
 %%% For UCSD                                                 
 
-% Last updated: 2024/01/17
+% Last updated: 2024/01/21
 % Author: Ty Lees
 
 % This script requires:
@@ -72,14 +72,11 @@ for subjID = 1:length(rawData)
         % Step 5.2: Notch filter @ 60 Hz;
         EEG  = pop_basicfilter(EEG, 1:EEG.nbchan, 'Boundary', 'boundary', 'Cutoff',  60, 'Design', 'notch', 'Filter', 'PMnotch', 'Order', 180); 
     
-    % Step 6: Re-reference to common average
-    EEG = pop_reref(EEG, []);
-
-    % Step 7: ICA
-        % Step 7.1: Run decomposition using FastICA.m
+    % Step 6: ICA
+        % Step 6.1: Run decomposition using FastICA.m
         EEG = pop_runica(EEG,'icatype','fastica','approach','symm','g','tanh','stabilization','on');
     
-        % Step 7.2: Use ICLabel to label components, flag artifactual componens, collate information
+        % Step 6.2: Use ICLabel to label components, flag artifactual componens, collate information
         EEG = pop_iclabel(EEG, 'Default'); 
         
         EEG = pop_icflag(EEG, [NaN NaN;0.9 1;0.9 1;NaN NaN;0.9 1;0.9 1;NaN NaN]); %Number = % Thresholds for rejections; Arg1 = Brain; Arg2 = Muscle; Arg3 = Eye; Arg4 = Heart; Arg5 = Line Noise; Arg6 = Channel Noise; Arg7 = Other
@@ -90,13 +87,16 @@ for subjID = 1:length(rawData)
         EEGPreprocessTAB.num_line_ICA_rem = sum(EEG.etc.ic_classification.ICLabel.classifications(:,5) > 0.9); % Number of line IC selected for removal
         EEGPreprocessTAB.num_chan_ICA_rem = sum(EEG.etc.ic_classification.ICLabel.classifications(:,6) > 0.9); % Number of channel ICs selected for removal
         
-        % Step 7.3: Remove selected components
+        % Step 6.3: Remove selected components
         EEG = pop_subcomp(EEG, [], 0);  % Remove components flagged by ICLabel
         EEG = eeg_checkset(EEG); % checking dataset integrity
 
-    % Step 8: Interpolate removed bad channels
+    % Step 7: Interpolate removed bad channels
     EEG = pop_interp(EEG, EEG.chaninfo.removedchans(6:end), 'spherical');       % Interpolate all channels removed by FASTER
     EEG = eeg_checkset(EEG); % checking dataset integrity
+
+    % Step : Re-reference to common average
+    EEG = pop_reref(EEG, []);
 
 %% Write .set  file for bandpower calculation
 EEG = pop_saveset(EEG, 'filename', strcat(rawData(subjID).folder,'\',rawData(subjID).name(1:end-4),'_processed.set'), ...
