@@ -13,3 +13,9 @@ The scripts are organised as follows:
     4. UCSD
 2. Files used to generate parameters for analysis are in the "ParameterDerivation" Folder.
     1. Currently this only includes the spectral power estimates. 
+
+## Notes:
+1. The test data are in various forms based on what was shared to me. There are some weird things about it from memory.
+   1. Stanford was unable to share a trimmed raw file, so shared an existing .SET file (i.e., output from EEGLAB). This meant I had to work with them to get their import functions correct without directly being able to test it.
+   2. 
+3. The .ced files are electrode location files and contain 3-D co-ordinates that allow the electrodes to be mapped on the head.
